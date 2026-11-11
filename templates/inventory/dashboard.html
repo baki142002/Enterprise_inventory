@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard · Web-based{% endblock %}
+{% block page_heading %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <h1>Good day, {{ user.username }}.</h1>
+        <p class="muted">Here is what's happening across your inventory today.</p>
+    </div>
+    <a class="btn primary shadow-sm" href="{% url 'transaction_create' %}">
+        <span class="icon">＋</span> New transaction
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon-wrapper blue">📦</div>
+        <div class="stat-content">
+            <span>Total products</span>
+            <b>{{ product_count }}</b>
+            <small class="positive">Active catalog items</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper {% if low_stock %}warning{% else %}neutral{% endif %}">⚠️</div>
+        <div class="stat-content">
+            <span>Low-stock alerts</span>
+            <b class="{% if low_stock %}warning-text{% endif %}">{{ low_stock }}</b>
+            <small>Products at or below reorder level</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper green">₱</div>
+        <div class="stat-content">
+            <span>Inventory value</span>
+            <b>₱{{ inventory_value|floatformat:2 }}</b>
+            <small>Based on purchase price</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon-wrapper purple">📈</div>
+        <div class="stat-content">
+            <span>7-day sales</span>
+            <b>₱{{ sales_total|floatformat:2 }}</b>
+            <small>Recorded sales revenue</small>
+        </div>
+    </div>
+</div>
+
+<div class="grid-two">
+    <!-- Low-stock Monitoring Panel -->
+    <div class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Low-stock monitoring</h2>
+                <p>Items that may need replenishment</p>
+            </div style="display: flex; gap: 12px; align-items: center;">
+                <a href="{% url 'export_reorder_csv' %}" class="btn-export" style="background: #1e293b; color: #38bdf8; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid #334155;"></a>
+            ⬇ Export Reorder CSV
+            </a>
+            <a href="{% url 'forecast' %}" class="link-arrow">View forecast <span>→</span></a>
+        </div>
+        
+        {% if low_products %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>On hand</th>
+                        <th>Reorder level</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in low_products %}
+                    <tr>
+                        <td>
+                            <b>{{ p.name }}</b>
+                            <small class="text-muted">{{ p.sku }}</small>
+                        </td>
+                        <td>{{ p.quantity }} {{ p.unit }}</td>
+                        <td>{{ p.reorder_level }}</td>
+                        <td>
+                            <span class="pill danger">
+                                <span class="dot-pulse"></span> Low stock
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🎉</div>
+            <p>All active products are safely above their reorder levels.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions Panel -->
+    <div class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Quick actions</h2>
+                <p>Common inventory tasks</p>
+            </div>
+        </div>
+        <div class="quick-links">
+            <a href="{% url 'product_create' %}" class="quick-link-card">
+                <span class="q-icon blue">＋</span>
+                <div>
+                    <b>Add product</b>
+                    <small>Create a catalog item</small>
+                </div>
+                <i class="arrow">→</i>
+            </a>
+            <a href="{% url 'sale_create' %}" class="quick-link-card">
+                <span class="q-icon green">₱</span>
+                <div>
+                    <b>Record a sale</b>
+                    <small>Deduct sold quantities</small>
+                </div>
+                <i class="arrow">→</i>
+            </a>
+
+            
+            <a href="{% url 'supplier_create' %}" class="quick-link-card">
+                <span class="q-icon purple">♧</span>
+                <div>
+                    <b>Add supplier</b>
+                    <small>Manage vendor details</small>
+                </div>
+                <i class="arrow">→</i>
+            </a>
+            <a href="{% url 'forecast' %}" class="quick-link-card">
+                <span class="q-icon orange">⌁</span>
+                <div>
+                    <b>View demand forecast</b>
+                    <small>Review reorder suggestions</small>
+                </div>
+                <i class="arrow">→</i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

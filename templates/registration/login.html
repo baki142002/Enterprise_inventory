@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign In · Enterprise Operations Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #070d18;
+      --bg-panel: #0d1627;
+      --border-panel: rgba(255, 255, 255, 0.08);
+      --maroon-deep: #700b1a;
+      --maroon-primary: #800020;
+      --maroon-light: #9f1239;
+      --cyan-badge: #38bdf8;
+      --green-status: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .enterprise-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .enterprise-wrapper {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+    }
+
+    /* Left Branding & System Telemetry */
+    .telemetry-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--cyan-badge);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+    }
+
+    .telemetry-tag::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-status);
+      box-shadow: 0 0 8px var(--green-status);
+    }
+
+    .system-title {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .system-desc {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 2.25rem;
+      max-width: 480px;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .telemetry-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-panel);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+    }
+
+    .telemetry-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      margin-bottom: 0.4rem;
+    }
+
+    .telemetry-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .dot-active {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-status);
+    }
+
+    .compliance-footer {
+      font-size: 0.75rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    /* Right Authentication Card */
+    .auth-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem 2.25rem;
+      color: #0f172a;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .auth-heading {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 0.35rem;
+    }
+
+    .auth-subheading {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 1.75rem;
+      line-height: 1.45;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 0.45rem;
+    }
+
+    .field-input {
+      display: block !important;
+      width: 100% !important;
+      height: 46px !important;
+      background-color: #f8fafc !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 8px !important;
+      padding: 0 14px !important;
+      font-size: 0.95rem !important;
+      color: #0f172a !important;
+      outline: none !important;
+      cursor: text !important;
+      margin-bottom: 1.25rem !important;
+      transition: all 0.15s ease !important;
+    }
+
+    .field-input:focus {
+      border-color: var(--maroon-primary) !important;
+      background-color: #ffffff !important;
+      box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12) !important;
+    }
+
+    .btn-maroon {
+      display: block !important;
+      width: 100% !important;
+      height: 48px !important;
+      background: var(--maroon-primary) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      box-shadow: 0 4px 12px rgba(128, 0, 32, 0.25) !important;
+      margin-top: 0.5rem !important;
+      margin-bottom: 1.5rem !important;
+      transition: all 0.15s ease !important;
+    }
+
+    .btn-maroon:hover {
+      background: var(--maroon-deep) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    .register-row {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+
+    .register-row a {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .register-row a:hover {
+      text-decoration: underline;
+    }
+
+    .instructions-footer {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 0.82rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      margin-bottom: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="enterprise-wrapper">
+    <!-- Left Section: Telemetry & Brand -->
+    <div>
+      <div class="telemetry-tag">Gateway Secure · Node-01</div>
+      <h1 class="system-title">Enterprise Operations</h1>
+      <p class="system-desc">
+        Centralized resource planning, stock-level reconciliation, audit logging, and warehouse dispatches.
+      </p>
+
+      <div class="telemetry-grid">
+        <div class="telemetry-box">
+          <div class="telemetry-label">System Cluster</div>
+          <div class="telemetry-val">
+            <span class="dot-active"></span>
+            PROD-EAST-04
+          </div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Session Protocol</div>
+          <div class="telemetry-val">TLS 1.3 / CSRF-OK</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Database Sync</div>
+          <div class="telemetry-val">Consistent (0.1ms)</div>
+        </div>
+        <div class="telemetry-box">
+          <div class="telemetry-label">Access Level</div>
+          <div class="telemetry-val">Role-Governed</div>
+        </div>
+      </div>
+
+      <div class="compliance-footer">
+        Protected by corporate security guidelines. Unauthorized access attempts are monitored and recorded into administrative audit trails.
+      </div>
+    </div>
+
+    <!-- Right Section: Interactive White Card -->
+    <div>
+      <div class="auth-card">
+        <h2 class="auth-heading">Sign in to session</h2>
+        <p class="auth-subheading">Enter your assigned enterprise domain credentials.</p>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert-error">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+
+          <label class="field-label" for="id_username">Operator Account</label>
+          <input 
+            type="text" 
+            name="username" 
+            id="id_username" 
+            class="field-input" 
+            placeholder="Enter username" 
+            required 
+            autofocus
+          >
+
+          <label class="field-label" for="id_password">Access Key / Password</label>
+          <input 
+            type="password" 
+            name="password" 
+            id="id_password" 
+            class="field-input" 
+            placeholder="Enter password" 
+            required
+          >
+          <div style="text-align: right; margin-top: 8px; margin-bottom: 16px;">
+        <a href="{% url 'password_reset' %}" style="color: #38bdf8; font-size: 0.82rem; text-decoration: none; font-weight: 500;">
+          Forgot password?
+        </a>
+      </div>
+      
+          <button type="submit" class="btn-maroon">Sign In to Dashboard</button>
+        </form>
+
+        <!-- Preserved Staff Registration Link -->
+        <div class="register-row">
+          New staff member? <a href="{% url 'register' %}">Register account</a>
+        </div>
+
+        <p class="instructions-footer">
+          Standard account setup instructions apply. Contact your internal system administrator for credential resets or privilege escalations.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

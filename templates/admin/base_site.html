@@ -1,0 +1,379 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Admin{% endblock %}
+
+{% block branding %}
+<div class="sp-brand-wrapper">
+  <div class="sp-brand-icon">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+    </svg>
+  </div>
+  <div class="sp-brand-text">
+    <span class="sp-brand-title">ADMINISTRATION</span>
+    <span class="sp-brand-badge">ENTERPRISE ADMIN</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+
+
+  /* ========================================================
+     1. Global Design Tokens
+     ======================================================== */
+  :root {
+    --bg-page: #0b1120;
+    --bg-header: #0f172a;
+    --bg-card: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-subtle: #2e1134;
+    --border-base: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(56, 189, 248, 0.25);
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.15);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --success-bg: rgba(16, 185, 129, 0.12);
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    background-color: var(--bg-page) !important;
+    color: var(--text-primary) !important;
+  }
+
+  /* ========================================================
+     2. Top Header Navigation
+     ======================================================== */
+  #header {
+    background: var(--bg-header) !important;
+    border-bottom: 1px solid var(--border-base) !important;
+    padding: 0.85rem 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .sp-brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .sp-brand-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #2563eb, #0284c7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .sp-brand-title {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+  }
+
+  .sp-brand-badge {
+    margin-left: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    border: 1px solid var(--border-accent);
+    vertical-align: middle;
+  }
+
+  #user-tools {
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  #user-tools a {
+    color: #cbd5e1 !important;
+    text-decoration: none !important;
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  #user-tools a:hover {
+    color: var(--accent) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* ========================================================
+     3. Breadcrumbs
+     ======================================================== */
+  div.breadcrumbs {
+    background: #080d19 !important;
+    border-bottom: 1px solid var(--border-base) !important;
+    padding: 0.65rem 2rem !important;
+    font-size: 0.78rem !important;
+    color: var(--text-muted) !important;
+  }
+
+  div.breadcrumbs a {
+    color: #94a3b8 !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+  }
+
+  div.breadcrumbs a:hover {
+    color: var(--accent) !important;
+  }
+
+  /* ========================================================
+     4. Main Dashboard Layout (#content-main & #content-related)
+     ======================================================== */
+  #content {
+    padding: 2rem !important;
+  }
+
+  #content > h1 {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.025em !important;
+    color: #ffffff !important;
+    margin-bottom: 1.75rem !important;
+  }
+
+  /* App Section Container Cards */
+  .dashboard .module {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-base) !important;
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    margin-bottom: 1.75rem !important;
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .dashboard .module table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  /* App Headers (Replacing Teal with Sleek Deep Slate) */
+  .dashboard .module caption,
+  .dashboard .module h2 {
+    background: #111a2e !important;
+    border-bottom: 1px solid var(--border-base) !important;
+    color: var(--accent) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    padding: 0.85rem 1.25rem !important;
+    text-align: left !important;
+  }
+
+  .dashboard .module caption a {
+    color: var(--accent) !important;
+    text-decoration: none !important;
+  }
+
+  /* Model Rows */
+  .dashboard .module tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    transition: background 0.15s ease !important;
+  }
+
+  .dashboard .module tr:last-child {
+    border-bottom: none !important;
+  }
+
+  .dashboard .module tr:hover {
+    background: rgba(30, 41, 59, 0.45) !important;
+  }
+
+  .dashboard .module th {
+    padding: 1rem 1.25rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+  }
+
+  .dashboard .module th a {
+    color: #f1f5f9 !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease !important;
+  }
+
+  .dashboard .module th a:hover {
+    color: var(--accent) !important;
+  }
+
+  .dashboard .module td {
+    padding: 1rem 1.25rem !important;
+    text-align: right !important;
+    vertical-align: middle !important;
+  }
+
+  /* Styled Action Badges (+ Add & Change) */
+  .dashboard a.addlink {
+    background: var(--success-bg) !important;
+    color: var(--success) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.3rem !important;
+    margin-right: 0.5rem !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .dashboard a.addlink:hover {
+    background: rgba(16, 185, 129, 0.22) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  .dashboard a.changelink,
+  .dashboard a.viewlink {
+    background: rgba(56, 189, 248, 0.08) !important;
+    color: var(--accent) !important;
+    border: 1px solid var(--border-accent) !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .dashboard a.changelink:hover {
+    background: rgba(56, 189, 248, 0.18) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* ========================================================
+     5. Recent Actions Activity Card
+     ======================================================== */
+  #content-related {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-base) !important;
+    border-radius: 14px !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  #content-related .module h2 {
+    background: transparent !important;
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    border-bottom: 1px solid var(--border-base) !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  #content-related .module h3 {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.7rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: var(--text-muted) !important;
+    margin-top: 1rem !important;
+  }
+
+  #content-related .module p {
+    color: var(--text-muted) !important;
+    font-size: 0.85rem !important;
+  }
+
+  #content-related .actionlist {
+    padding-left: 0 !important;
+    list-style: none !important;
+  }
+
+  #content-related .actionlist li {
+    padding: 0.65rem 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    font-size: 0.825rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  #content-related .actionlist li a {
+    color: var(--accent) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+  }
+
+  #content-related .actionlist li a:hover {
+    text-decoration: underline !important;
+  }
+
+  /* ========================================================
+     6. Change Lists & Object Tables (Sub-Pages)
+     ======================================================== */
+  #changelist {
+    border: 1px solid var(--border-base) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    background: var(--bg-card) !important;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  #changelist thead th {
+    background: #0d1527 !important;
+    border-top: 1px solid var(--border-base) !important;
+    border-bottom: 1px solid var(--border-base) !important;
+    padding: 0.85rem 1rem !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+  }
+
+  #changelist tbody td {
+    padding: 0.95rem 1rem !important;
+    font-size: 0.875rem !important;
+    color: #e2e8f0 !important;
+  }
+
+  .field-formatted_timestamp,
+  .field-ip_address,
+  .field-get_date_joined,
+  .field-get_last_login {
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.78rem !important;
+    color: #cbd5e1 !important;
+    white-space: nowrap !important;
+  }
+
+
+
+  
+</style>
+{% endblock %}
+

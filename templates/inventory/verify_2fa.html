@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two-Factor Verification · StockPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-page: #f8fafc;
+      --maroon-deep: #700b1a;
+      --maroon-primary: #800020;
+      --maroon-light: #9f1239;
+      --border-color: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: var(--bg-page);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    .otp-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .icon-bubble {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--maroon-primary), var(--maroon-light));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 12px rgba(128, 0, 32, 0.25);
+    }
+
+    .title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--maroon-deep);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin: 0 0 1.75rem 0;
+      line-height: 1.5;
+    }
+
+    .phone-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--maroon-primary);
+    }
+
+    .otp-input {
+      width: 100%;
+      height: 54px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: 0.45em;
+      text-align: center;
+      color: var(--text-primary);
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .otp-input:focus {
+      border-color: var(--maroon-primary);
+      box-shadow: 0 0 0 4px rgba(128, 0, 32, 0.1);
+    }
+
+    .btn-verify {
+      width: 100%;
+      height: 48px;
+      background: var(--maroon-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 9px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(128, 0, 32, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    .btn-verify:hover {
+      background: var(--maroon-deep);
+      transform: translateY(-1px);
+    }
+
+    .alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="otp-card">
+    <div class="icon-bubble">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+      </svg>
+    </div>
+
+    <h1 class="title">Two-Step Verification</h1>
+    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 1.5rem;">
+  Enter the 6-digit verification code sent to your email at 
+  <strong>{{ request.session.pre_2fa_email|default:"your Gmail inbox" }}</strong>.
+</p>
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'admin_verify_2fa' %}">
+  {% csrf_token %}
+  
+  <div style="margin: 1.5rem 0;">
+    <input 
+      type="text" 
+      name="code" 
+      maxlength="6" 
+      placeholder="••••••" 
+      required 
+      autofocus
+      style="text-align: center; letter-spacing: 0.75rem; font-size: 1.75rem; font-weight: 700; width: 100%; height: 55px; border-radius: 8px; border: 2px solid #800020; outline: none; color: #1e293b;"
+    >
+  </div>
+
+  <button type="submit" style="width: 100%; height: 48px; background: #800020; color: #ffffff; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s;">
+    Verify & Sign In
+  </button>
+</form>
+
+</body>
+</html>

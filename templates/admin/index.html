@@ -1,0 +1,285 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  /* Reset outer container margins */
+  #content {
+    padding: 2rem !important;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.75rem 0;
+  }
+
+  /* Two-column side-by-side balanced grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1fr);
+    gap: 1.75rem;
+    align-items: start;
+    width: 100%;
+  }
+
+  @media (max-width: 1024px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Shared card aesthetics */
+  .sp-card {
+    background: #0f192e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1.75rem;
+  }
+
+  .sp-card-header {
+    background: #111b30;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sp-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin: 0;
+  }
+
+  /* Operations Tables */
+  .sp-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .sp-table tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 0.15s ease;
+  }
+
+  .sp-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .sp-table tr:hover {
+    background: rgba(30, 41, 59, 0.4);
+  }
+
+  .sp-table th {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .sp-table th a {
+    color: #f1f5f9;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .sp-table th a:hover {
+    color: #38bdf8;
+  }
+
+  .sp-table td {
+    padding: 1rem 1.25rem;
+    text-align: right;
+  }
+
+  /* Action Badges */
+  .btn-badge-add {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-right: 0.4rem;
+    transition: all 0.15s ease;
+  }
+
+  .btn-badge-add:hover {
+    background: rgba(16, 185, 129, 0.22);
+    transform: translateY(-1px);
+  }
+
+  .btn-badge-change {
+    background: rgba(56, 189, 248, 0.08);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 6px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.15s ease;
+  }
+
+  .btn-badge-change:hover {
+    background: rgba(56, 189, 248, 0.18);
+    transform: translateY(-1px);
+  }
+
+  /* Activity / Audit Feed Right Panel */
+  .status-indicator {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+
+  .activity-feed-body {
+    padding: 1.25rem;
+  }
+
+  .feed-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.85rem;
+    display: block;
+  }
+
+  .feed-empty {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .feed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .feed-item {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.825rem;
+    color: #94a3b8;
+    line-height: 1.4;
+  }
+
+  .feed-item:last-child {
+    border-bottom: none;
+  }
+
+  .feed-item a {
+    color: #38bdf8;
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">USERS INFORMATIONS</h1>
+
+<div class="dashboard-grid">
+  <!-- Left Side: Modules & Data Tables -->
+  <div class="main-column">
+    {% for app in app_list %}
+      <div class="sp-card">
+        <div class="sp-card-header">
+          <h2 class="sp-card-title">{{ app.name }}</h2>
+        </div>
+        <table class="sp-table">
+          <tbody>
+            {% for model in app.models %}
+              <tr>
+                <th scope="row">
+                  {% if model.admin_url %}
+                    <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                  {% else %}
+                    {{ model.name }}
+                  {% endif %}
+                </th>
+                <td>
+                  {% if model.add_url %}
+                    <a href="{{ model.add_url }}" class="btn-badge-add">+ Add</a>
+                  {% endif %}
+                  {% if model.admin_url %}
+                    {% if model.view_only %}
+                      <a href="{{ model.admin_url }}" class="btn-badge-change">View</a>
+                    {% else %}
+                      <a href="{{ model.admin_url }}" class="btn-badge-change">Change</a>
+                    {% endif %}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Right Side: Recent Activity Audit Column -->
+  <div class="sidebar-column">
+    <div class="sp-card">
+      <div class="sp-card-header">
+        <h2 class="sp-card-title" style="color: #f8fafc; display: flex; align-items: center; gap: 0.5rem;">
+          <span class="status-indicator"></span>
+          Recent Actions
+        </h2>
+      </div>
+      <div class="activity-feed-body">
+        <span class="feed-section-label">Operator Audit Trail</span>
+        {% load log %}
+        {% get_admin_log 8 as admin_log for_user user %}
+        {% if not admin_log %}
+          <p class="feed-empty">No actions recorded in this session</p>
+        {% else %}
+          <ul class="feed-list">
+            {% for entry in admin_log %}
+              <li class="feed-item">
+                {% if entry.is_addition %}<span style="color: #10b981; font-weight: 600;">Added</span>{% endif %}
+                {% if entry.is_change %}<span style="color: #38bdf8; font-weight: 600;">Edited</span>{% endif %}
+                {% if entry.is_deletion %}<span style="color: #ef4444; font-weight: 600;">Deleted</span>{% endif %}
+                {% if entry.content_type %}
+                  {{ entry.content_type.name }}:
+                {% endif %}
+                {% if entry.is_deletion %}
+                  {{ entry.object_repr }}
+                {% else %}
+                  <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
