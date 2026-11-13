@@ -4,16 +4,17 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User
 from .models import UserAccessLog
 from .models import Sale, StockTransaction, Product, UserAccessLog
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
+from django.db.models.signals import post_save, post_delete
 
 @receiver(post_save, sender=Sale)
 def monitor_stock_after_sale(sender, instance, created, **kwargs):
     if created:
         product = instance.product
-        # Deduct quantity from catalog
+       
         product.quantity -= instance.quantity
         product.save(update_fields=['quantity'])
 
-        # Automated threshold check
         if product.quantity <= product.reorder_level:
             UserAccessLog.objects.create(
                 user=instance.cashier if hasattr(instance, 'cashier') else None,
@@ -31,7 +32,6 @@ def get_client_ip(request):
         return request.META.get('REMOTE_ADDR')
     return None
 
-# 1. Triggered whenever a new user account is created
 @receiver(post_save, sender=User)
 def log_user_registration(sender, instance, created, **kwargs):
     if created:
@@ -39,8 +39,6 @@ def log_user_registration(sender, instance, created, **kwargs):
             user=instance,
             action='REGISTER'
         )
-
-# 2. Triggered every time a user logs in
 @receiver(user_logged_in)
 def log_user_login(sender, request, user, **kwargs):
     UserAccessLog.objects.create(

@@ -11,7 +11,6 @@ class AdminProfileInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'Two-Factor SMS Settings'
 
-# In your existing CustomUserAdmin:
 class CustomUserAdmin(DefaultUserAdmin):
     inlines = (AdminProfileInline,)
     list_display = ('username', 'email', 'get_date_joined', 'get_last_login', 'is_staff', 'is_active')
@@ -19,20 +18,20 @@ admin.site.site_header = "Administration"
 admin.site.site_title = "Enterprise Operations"
 admin.site.index_title = "Enterprise Operations Management"
 
-# 1. Unregister standard User model to enhance it
+
 admin.site.unregister(User)
 
 @admin.register(User)
 class CustomUserAdmin(DefaultUserAdmin):
     list_display = ('username', 'email', 'get_date_joined', 'get_last_login', 'is_staff', 'is_active')
     
-    # Formats date joined down to exact seconds
+    
     def get_date_joined(self, obj):
         return obj.date_joined.strftime("%B %d, %Y - %I:%M:%S %p")
     get_date_joined.short_description = "Account Created (Date/Time/Sec)"
     get_date_joined.admin_order_field = 'date_joined'
 
-    # Formats last login down to exact seconds
+
     def get_last_login(self, obj):
         if obj.last_login:
             return obj.last_login.strftime("%B %d, %Y - %I:%M:%S %p")
@@ -41,7 +40,6 @@ class CustomUserAdmin(DefaultUserAdmin):
     get_last_login.admin_order_field = 'last_login'
 
 
-# 2. Register UserAccessLog to view live audit trails of every single login
 @admin.register(UserAccessLog)
 class UserAccessLogAdmin(admin.ModelAdmin):
     list_display = ('user', 'action', 'display_timestamp', 'ip_address')
@@ -57,7 +55,7 @@ class UserAccessLogAdmin(admin.ModelAdmin):
     display_timestamp.short_description = "Timestamp"
     
     def has_add_permission(self, request):
-        return False  # Prevent manual tampering with security audit logs
+        return False  
 from .models import AdminProfile
 
 @admin.register(AdminProfile)

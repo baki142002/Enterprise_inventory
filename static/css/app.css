@@ -28,7 +28,7 @@
   flex-shrink: 0;
 }
 
-/* Flash Messages */
+
 .notice {
   display: flex;
   justify-content: space-between;
@@ -44,7 +44,7 @@
 .notice-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 .notice-dismiss { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: inherit; }
 
-/* Status Dot Pulse */
+
 .status-dot {
   width: 8px;
   height: 8px;
@@ -53,7 +53,7 @@
   display: inline-block;
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
-/* Stat Cards Modern Styling */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -98,7 +98,7 @@
 .stat-content b { font-size: 1.5rem; color: #0f172a; display: block; margin: 0.15rem 0; }
 .stat-content small { font-size: 0.75rem; color: #94a3b8; }
 
-/* Quick Action Cards */
+
 .quick-links {
     display: flex;
     flex-direction: column;
@@ -145,7 +145,7 @@
 .quick-link-card .arrow { color: #94a3b8; font-style: normal; transition: transform 0.2s; }
 .quick-link-card:hover .arrow { color: #0f172a; transform: translateX(2px); }
 
-/* Empty State Styling */
+
 .empty-state {
     text-align: center;
     padding: 2.5rem 1rem;
@@ -153,7 +153,7 @@
 }
 .empty-icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-/* Pulse animation for warnings */
+
 .dot-pulse {
     display: inline-block;
     width: 6px;
@@ -168,34 +168,34 @@
     50% { opacity: 0.4; transform: scale(0.9); }
     100% { opacity: 1; transform: scale(1); }
 }
-/* Sidebar */
+
 .sidebar {
     background: #5B1728;
     color: #ffffff;
 }
 
-/* Sidebar logo and text */
+
 .sidebar .logo,
 .sidebar h2,
 .sidebar h3 {
     color: #ffffff;
 }
 
-/* Sidebar navigation links */
+
 .sidebar a {
     color: #F3E8EB;
     text-decoration: none;
     transition: all 0.2s ease;
 }
 
-/* Hover effect */
+
 .sidebar a:hover {
     background: #74243A;
     color: #ffffff;
     border-radius: 8px;
 }
 
-/* Active navigation link */
+
 .sidebar a.active {
     background: #F8EDEF;
     color: #5B1728;
@@ -203,13 +203,11 @@
     font-weight: 600;
 }
 
-/* Sidebar icons */
+
 .sidebar .icon {
     color: inherit;
 }
-/* =================================
-   MAROON SIDEBAR ANIMATIONS
-================================= */
+
 
 .sidebar {
     background: #5B1728;
@@ -217,7 +215,7 @@
     animation: sidebarEnter 0.7s ease-out;
 }
 
-/* Sidebar entrance */
+
 @keyframes sidebarEnter {
     from {
         opacity: 0;
@@ -229,7 +227,7 @@
     }
 }
 
-/* Navigation links */
+
 .sidebar a {
     position: relative;
     display: flex;
@@ -249,7 +247,7 @@
         box-shadow 0.3s ease;
 }
 
-/* Hover animation */
+
 .sidebar a:hover {
     background: #74243A;
     color: #fff;
@@ -257,7 +255,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Icon animation */
+
 .sidebar a .icon {
     display: inline-block;
     transition: transform 0.35s ease;
@@ -267,14 +265,14 @@
     transform: scale(1.2) rotate(-8deg);
 }
 
-/* Active navigation */
+
 .sidebar a.active {
     background: #F8EDEF;
     color: #5B1728;
     font-weight: 600;
 }
 
-/* Active menu indicator */
+
 .sidebar a.active::before {
     content: "";
     position: absolute;
@@ -296,7 +294,7 @@
     }
 }
 
-/* Logo animation */
+
 .sidebar .logo {
     animation: logoFade 0.8s ease;
 }
@@ -312,7 +310,7 @@
     }
 }
 
-/* Navigation entrance stagger */
+
 .sidebar a:nth-of-type(1) {
     animation: menuFade 0.4s ease 0.1s both;
 }
@@ -348,7 +346,7 @@
     }
 }
 
-/* Accessibility: reduce motion */
+
 @media (prefers-reduced-motion: reduce) {
     .sidebar,
     .sidebar *,
@@ -358,7 +356,6 @@
     }
 }
 
-/* COLLAPSIBLE MAROON SIDEBAR */
 
 .sidebar {
     width: 260px;
@@ -381,13 +378,13 @@
     }
 }
 
-/* Collapsed state */
+
 .sidebar.collapsed {
     width: 78px;
     min-width: 78px;
 }
 
-/* Navigation links */
+
 .sidebar a {
     display: flex;
     align-items: center;
@@ -413,7 +410,7 @@
     font-weight: 600;
 }
 
-/* Icons */
+
 .sidebar a .icon {
     min-width: 24px;
     text-align: center;
@@ -424,7 +421,7 @@
     transform: scale(1.2);
 }
 
-/* Hide text when collapsed */
+
 .sidebar.collapsed .nav-text,
 .sidebar.collapsed .logo-text {
     opacity: 0;
@@ -433,7 +430,7 @@
     pointer-events: none;
 }
 
-/* Center icons when collapsed */
+
 .sidebar.collapsed a {
     justify-content: center;
     padding: 13px 8px;
@@ -445,7 +442,7 @@
     transform: scale(1.05);
 }
 
-/* Toggle button */
+
 .sidebar-toggle {
     background: #74243A;
     border: none;
@@ -462,14 +459,14 @@
     transform: rotate(180deg);
 }
 
-/* Main content adjustment */
+
 .main-content {
     flex: 1;
     min-width: 0;
     transition: margin-left 0.35s ease;
 }
 
-/* Mobile layout */
+
 @media (max-width: 768px) {
     .sidebar {
         width: 78px;
@@ -482,7 +479,7 @@
     }
 }
 
-/* Accessibility */
+
 @media (prefers-reduced-motion: reduce) {
     .sidebar,
     .sidebar *,
@@ -492,9 +489,6 @@
     }
 }
 
-/* =================================
-   CHANGE ALL BUTTONS TO MAROON
-================================= */
 
 button,
 .btn,
@@ -507,7 +501,7 @@ input[type="button"] {
     transition: all 0.3s ease;
 }
 
-/* Hover effect */
+
 button:hover,
 .btn:hover,
 a.btn:hover,
@@ -518,7 +512,7 @@ input[type="button"]:hover {
     color: #FFFFFF !important;
 }
 
-/* Click effect */
+
 button:active,
 .btn:active,
 a.btn:active {
@@ -526,16 +520,13 @@ a.btn:active {
     transform: scale(0.98);
 }
 
-/* Keep disabled buttons readable */
+
 button:disabled,
 .btn:disabled {
     opacity: 0.55;
     cursor: not-allowed;
 }
 
-/* =================================
-   ENHANCED LOGOUT BUTTON
-================================= */
 
 .sidebar-bottom .btn-logout {
     width: 100%;
@@ -562,14 +553,14 @@ button:disabled,
     transition: all 0.3s ease;
 }
 
-/* Logout icon */
+
 .sidebar-bottom .btn-logout svg {
     width: 18px;
     height: 18px;
     transition: transform 0.35s ease;
 }
 
-/* Hover animation */
+
 .sidebar-bottom .btn-logout:hover {
     background: #F8EDEF;
     color: #5B1728;
@@ -581,24 +572,21 @@ button:disabled,
     box-shadow: 0 5px 15px rgba(0,0,0,0.18);
 }
 
-/* Icon animation */
+
 .sidebar-bottom .btn-logout:hover svg {
     transform: translateX(4px);
 }
 
-/* Click animation */
+
 .sidebar-bottom .btn-logout:active {
     transform: scale(0.97);
 }
 
-/* Smooth focus */
+
 .sidebar-bottom .btn-logout:focus-visible {
     outline: 3px solid #D69BA9;
     outline-offset: 3px;
 }
-/* =================================
-   ADMIN LOGIN INFORMATION
-================================= */
 
 .admin-login-info {
     display: flex;
@@ -644,7 +632,7 @@ button:disabled,
         transform: translateY(0);
     }
 }
-/* ADMIN LOGIN CARD - SIDEBAR TOP */
+
 
 .admin-login-card {
     margin: 12px 14px 18px;
@@ -705,7 +693,7 @@ button:disabled,
         transform: translateY(0);
     }
 }
-/* Fix Admin Container and Table Width */
+
 #content {
     max-width: 100% !important;
     padding: 24px 32px !important;
@@ -729,7 +717,6 @@ button:disabled,
     overflow-x: auto !important;
 }
 
-/* Ensure Result List Table fills width and never cuts off columns */
 #result_list {
     width: 100% !important;
     border-collapse: separate !important;
@@ -762,7 +749,6 @@ button:disabled,
     background-color: #1a2744 !important;
 }
 
-/* Fix Filter Sidebar Layout */
 #changelist-filter {
     background: #0f172a !important;
     border-left: 1px solid #1e293b !important;

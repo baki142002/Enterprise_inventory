@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block page_heading %}User Directory{% endblock %}
+
+{% block content %}
+<div style="max-width: 1120px; margin: 0 auto;">
+    <!-- Top Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <a href="/inventory/management/administration/" style="font-size: 0.82rem; font-weight: 700; color: #420f1c; text-decoration: none; display: inline-block; margin-bottom: 6px;">
+                ← Back to Administration
+            </a>
+            <p style="font-size: 0.9rem; color: #64748b; margin: 4px 0 0 0;">Manage all registered staff accounts, access roles, and active statuses ({{ total_count }} accounts).</p>
+        </div>
+        <a href="/inventory/management/users/add/" style="background: #420f1c; color: #ffffff; padding: 10px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; text-decoration: none; box-shadow: 0 2px 6px rgba(66, 15, 28, 0.2);">
+                + Add New User
+         </a>
+    </div>
+
+    <!-- Search & Role Filter Card -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);">
+        <form method="get" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <input type="text" name="q" value="{{ q }}" placeholder="Search by username or email..." style="flex: 1; min-width: 240px; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">
+            <select name="role" style="padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #ffffff;">
+                <option value="">All Roles</option>
+                <option value="superadmin" {% if role_filter == 'superadmin' %}selected{% endif %}>Superadmin</option>
+                <option value="operator" {% if role_filter == 'operator' %}selected{% endif %}>Operator</option>
+            </select>
+            <button type="submit" style="background: #420f1c; color: #ffffff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer;">
+                Filter
+            </button>
+            {% if q or role_filter %}
+                <a href="{% url 'enterprise_user_list' %}" style="font-size: 0.85rem; color: #64748b; text-decoration: none; padding: 0 8px;">Reset</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Users Table Card -->
+    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b;">
+                    <th style="padding: 14px 18px;">Username</th>
+                    <th style="padding: 14px 18px;">Email Address</th>
+                    <th style="padding: 14px 18px;">Role</th>
+                    <th style="padding: 14px 18px;">Date Joined</th>
+                    <th style="padding: 14px 18px;">Status</th>
+                    <th style="padding: 14px 18px; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 14px 18px; font-weight: 700; color: #0f172a;">{{ u.username }}</td>
+                    <td style="padding: 14px 18px; color: #64748b; font-size: 0.88rem;">{{ u.email|default:"No email set" }}</td>
+                    <td style="padding: 14px 18px;">
+                        {% if u.is_superuser %}
+                            <span style="background: rgba(66, 15, 28, 0.1); color: #420f1c; padding: 3px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 800;">SUPERADMIN</span>
+                        {% else %}
+                            <span style="background: #f1f5f9; color: #475569; padding: 3px 10px; border-radius: 6px; font-size: 0.74rem; font-weight: 700;">OPERATOR</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 14px 18px; color: #64748b; font-size: 0.85rem;">{{ u.date_joined|date:"M d, Y" }}</td>
+                    <td style="padding: 14px 18px; font-size: 0.85rem; font-weight: 700;">
+                        {% if u.is_active %}
+                            <span style="color: #16a34a;">● Active</span>
+                        {% else %}
+                            <span style="color: #dc2626;">● Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 14px 18px; text-align: right;">
+                        {% if u != request.user %}
+                            <a href="{% url 'enterprise_user_toggle_active' u.pk %}" style="color: #420f1c; font-weight: 700; font-size: 0.84rem; text-decoration: none; padding: 6px 12px; border: 1px solid rgba(66, 15, 28, 0.25); border-radius: 7px;">
+                                {% if u.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </a>
+                        {% else %}
+                            <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Current Session</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="padding: 28px; text-align: center; color: #94a3b8;">No matching accounts found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

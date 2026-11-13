@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Overview{% endblock %} · Web-based</title>
 
-  <!-- Google Font (Inter) & Stylesheets -->
+ 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,10 +18,10 @@
 
   <div class="app-shell" id="appShell">
     
-    <!-- Mobile Backdrop -->
+   
     <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-    <!-- Sidebar Navigation -->
+   
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <a class="brand" href="{% url 'dashboard' %}">
@@ -106,16 +106,17 @@
 
           {% if user.is_staff %}
             <span class="nav-label">SYSTEM</span>
-            <a href="/admin/" target="_blank" rel="noopener" class="nav-item">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-              <span>Administration</span>
-            </a>
+            <!-- Change href from /admin/ to your new custom portal -->
+<a href="{% url 'custom_admin_portal' %}" class="nav-link {% if request.resolver_match.url_name == 'custom_admin_portal' %}active{% endif %}">
+    <span class="nav-icon">⚙️</span>
+    <span>Administration</span>
+</a>
           {% endif %}
 
         {% endwith %}
       </nav>
 
-      <!-- Sidebar Bottom Profile & Action -->
+      
       <div class="sidebar-bottom">
         <div class="user-chip">
           <div class="avatar" title="{{ user.get_full_name|default:user.username }}">
@@ -141,10 +142,10 @@
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+   
     <main class="main">
       
-      <!-- Top Navigation Bar -->
+      
       <header class="topbar">
        
         <div class="topbar-left">
@@ -153,7 +154,7 @@
           </button>
           <div>
             <span class="eyebrow">{% block eyebrow %}ENTERPRISE OPERATIONS{% endblock %}</span>
-            <h1 class="page-heading">{% block page_heading %}Overview{% endblock %}</h1>
+            
           </div>
         </div>
 
@@ -166,9 +167,9 @@
         </div>
       </header>
 
-      <!-- Page Content -->
+    
       <section class="content">
-        <!-- Django Notification Messages -->
+      
         {% if messages %}
           <div class="messages-container">
             {% for message in messages %}
@@ -183,7 +184,7 @@
         {% block content %}{% endblock %}
       </section>
 
-      <!-- App Footer -->
+      
       <footer class="app-footer">
         <p>© {% now "Y" %} Web-based · Automated Inventory Tracking & Predictive Forecasting</p>
       </footer>

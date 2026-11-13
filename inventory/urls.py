@@ -24,4 +24,11 @@ urlpatterns = [
     path('login/', views.admin_login_view, name='login'),
     path('login/verify-2fa/', views.admin_verify_2fa_view, name='admin_verify_2fa'),
     path('inventory/export-reorder/', views.export_reorder_csv, name='export_reorder_csv'),
+    path('management/administration/', views.enterprise_admin_portal, name='custom_admin_portal'),
+    path('management/users/add/', views.custom_create_user, name='custom_create_user'),
+    path('management/password-change/', views.custom_change_password, name='custom_change_password'),
+    path("management/users/", views.enterprise_user_list, name="enterprise_user_list"),
+    path("management/users/<int:pk>/toggle/", views.enterprise_user_toggle_active, name="enterprise_user_toggle_active"),
+    path("products/<int:pk>/delete/", views.product_delete, name="product_delete"),
+    path("management/users/<int:user_id>/edit/", views.user_edit, name="user_edit"),
 ]

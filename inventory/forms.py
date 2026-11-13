@@ -10,7 +10,7 @@ class StyledModelForm(forms.ModelForm):
 class ProductForm(StyledModelForm):
     class Meta:
         model = Product
-        fields = ["name","sku","category","supplier","unit","purchase_price","selling_price","quantity","reorder_level","description","active"]
+        fields = ["name","sku","category","supplier","unit","purchase_price","selling_price","quantity","reorder_level","image","description","active"]
 
 class CategoryForm(StyledModelForm):
     class Meta:

@@ -75,7 +75,7 @@ class UserAccessLog(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='access_logs')
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)  # Automatically captures YYYY-MM-DD HH:MM:SS
+    timestamp = models.DateTimeField(auto_now_add=True) 
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
     class Meta:
@@ -111,6 +111,7 @@ class Product(models.Model):
     reorder_level = models.PositiveIntegerField(default=5)
     description = models.TextField(blank=True)
     active = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     @property
     def stock_value(self): return self.quantity * self.purchase_price
@@ -151,7 +152,7 @@ class UserAccessLog(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='access_logs')
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)  # Automatically captures YYYY-MM-DD HH:MM:SS
+    timestamp = models.DateTimeField(auto_now_add=True)  
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
     class Meta:

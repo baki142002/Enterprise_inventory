@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Dashboard · Web-based{% endblock %}
-{% block page_heading %}Dashboard{% endblock %}
+{% block page_heading %}{% endblock %}
 
 {% block content %}
 <div class="welcome-row">
@@ -54,7 +54,7 @@
     <div class="panel">
         <div class="panel-head">
             <div>
-                <h2>Low-stock monitoring</h2>
+              
                 <p>Items that may need replenishment</p>
             </div style="display: flex; gap: 12px; align-items: center;">
                 <a href="{% url 'export_reorder_csv' %}" class="btn-export" style="background: #1e293b; color: #38bdf8; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; border: 1px solid #334155;"></a>
@@ -105,7 +105,7 @@
     <div class="panel">
         <div class="panel-head">
             <div>
-                <h2>Quick actions</h2>
+               
                 <p>Common inventory tasks</p>
             </div>
         </div>

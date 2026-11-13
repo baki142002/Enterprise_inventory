@@ -18,8 +18,142 @@ from django.db.models import Sum
 from .models import Product, Sale
 from django.http import HttpResponse
 from .models import Product
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User, Group
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from .models import Category, Supplier, Product, Sale, StockTransaction, UserAccessLog
 import csv
 import random
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def user_edit(request, user_id):
+    target_user = get_object_or_404(User, pk=user_id)
+
+    if request.method == "POST":
+        target_user.username = request.POST.get("username", "").strip()
+        target_user.first_name = request.POST.get("first_name", "").strip()
+        target_user.last_name = request.POST.get("last_name", "").strip()
+        target_user.email = request.POST.get("email", "").strip()
+        target_user.is_active = request.POST.get("is_active") == "on"
+        target_user.is_staff = request.POST.get("is_staff") == "on"
+        target_user.is_superuser = request.POST.get("is_superuser") == "on"
+        target_user.save()
+        messages.success(request, f"Updated user '{target_user.username}'.")
+        return redirect("/inventory/management/administration/")
+
+    return render(request, "inventory/user_edit.html", {"target_user": target_user})
+
+
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def enterprise_user_list(request):
+    q = request.GET.get("q", "").strip()
+    role_filter = request.GET.get("role", "")
+    users = User.objects.all().order_by("-date_joined")
+
+    if q:
+        users = users.filter(username__icontains=q) | users.filter(email__icontains=q)
+    if role_filter == "superadmin":
+        users = users.filter(is_superuser=True)
+    elif role_filter == "operator":
+        users = users.filter(is_superuser=False)
+
+    return render(request, "inventory/admin_user_list.html", {
+        "users": users,
+        "q": q,
+        "role_filter": role_filter,
+        "total_count": users.count(),
+    })
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def enterprise_user_toggle_active(request, pk):
+    target_user = get_object_or_404(User, pk=pk)
+    if target_user != request.user:
+        target_user.is_active = not target_user.is_active
+        target_user.save()
+        status_label = "activated" if target_user.is_active else "deactivated"
+        messages.success(request, f"Account '{target_user.username}' {status_label}.")
+    else:
+        messages.warning(request, "You cannot deactivate your own active session.")
+    return redirect("enterprise_user_list")
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def custom_create_user(request):
+    groups = Group.objects.all().order_by('name')
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        role = request.POST.get('role', 'operator')
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if not username or not password:
+            messages.error(request, "Username and password are required.")
+            return redirect('custom_create_user')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return redirect('custom_create_user')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, f"User '{username}' already exists.")
+            return redirect('custom_create_user')
+
+        is_superuser = (role == 'superuser')
+        is_staff = (role in ['staff', 'superuser'])
+
+        new_user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            is_staff=is_staff,
+            is_superuser=is_superuser,
+            is_active=True
+        )
+        messages.success(request, f"Account '{new_user.username}' successfully created!")
+        return redirect('custom_admin_portal')
+
+    return render(request, 'inventory/admin_user_create.html', {'groups': groups})
+
+@login_required
+def custom_change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Keep the user logged in
+            messages.success(request, "Your password has been changed successfully.")
+            return redirect('custom_admin_portal' if request.user.is_staff else 'dashboard')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+    else:
+        form = PasswordChangeForm(user=request.user)
+    
+    return render(request, 'inventory/password_change.html', {'form': form})
+
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def enterprise_admin_portal(request):
+    total_users = User.objects.count()
+    total_groups = Group.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    
+    
+    recent_logs = UserAccessLog.objects.select_related('user').order_by('-timestamp')[:10]
+    user_list = User.objects.all().order_by('-date_joined')[:8]
+
+    context = {
+        'total_users': total_users,
+        'total_groups': total_groups,
+        'active_users': active_users,
+        'recent_logs': recent_logs,
+        'user_list': user_list,
+    }
+    return render(request, 'inventory/admin_portal.html', context)
 
 
 @login_required
@@ -55,16 +189,16 @@ def forecast_view(request):
     forecast_data = []
 
     for product in products:
-        # Aggregate quantity sold over last 30 days
+        
         total_sold_30d = Sale.objects.filter(
             product=product,
             sale_date__gte=thirty_days_ago
         ).aggregate(total=Sum('quantity'))['total'] or 0
 
-        # Average Daily Consumption (ADC)
+        
         daily_velocity = Decimal(total_sold_30d) / Decimal(30)
 
-        # Days until inventory depletes
+        
         if daily_velocity > 0:
             days_until_stockout = int(product.quantity / daily_velocity)
             stockout_date = today + timedelta(days=days_until_stockout)
@@ -72,11 +206,11 @@ def forecast_view(request):
             days_until_stockout = None
             stockout_date = None
 
-        # Recommended replenishment quantity (Buffer for 14-day lead time)
+        
         lead_time_days = 14
         suggested_reorder = max(0, int((daily_velocity * lead_time_days) + product.reorder_level - product.quantity))
 
-        # Risk level determination
+        
         if product.quantity <= product.reorder_level:
             urgency = 'CRITICAL'
         elif days_until_stockout is not None and days_until_stockout <= 7:
@@ -111,23 +245,23 @@ def admin_login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            # Check user has an email address
+            
             recipient_email = user.email or 'lemuelbasco12345@gmail.com'
 
-            # Generate 6-digit code
+           
             otp_code = f"{random.randint(100000, 999999)}"
 
-            # Save in database
+            
             SMSVerificationCode.objects.create(
                 user=user,
                 code=otp_code,
                 is_used=False
             )
 
-            # Send via Gmail
+        
             send_email_otp(recipient_email, otp_code, user.username)
 
-            # Store in session and route to verification
+    
             request.session['pre_2fa_user_id'] = user.id
             request.session['pre_2fa_email'] = recipient_email
             return redirect('admin_verify_2fa')
@@ -147,25 +281,24 @@ def admin_verify_2fa_view(request):
     except User.DoesNotExist:
         return redirect('login')
 
-    # Phone number display for masked UI (e.g. 0985****420)
     if request.method == 'POST':
-        # 1. Grab code from single input or multiple split boxes
+        
         entered_code = request.POST.get('code', '').strip()
         if not entered_code:
-            # Check if template used 6 separate input boxes (otp_1 to otp_6 or digit_1 to digit_6)
+        
             parts = [request.POST.get(f'otp_{i}', '') or request.POST.get(f'digit_{i}', '') for i in range(1, 7)]
             entered_code = ''.join(parts).strip()
 
         print(f"--> [DEBUG 2FA] Submitted code: '{entered_code}' for user: {user.username}")
 
-        # 2. Look up the latest unused code for this user
+        
         verification = SMSVerificationCode.objects.filter(
             user=user,
             code=entered_code,
             is_used=False
         ).order_by('-created_at').first()
 
-        # Fallback check if code was already marked used on double-submit
+        
         if not verification:
             verification = SMSVerificationCode.objects.filter(
                 user=user,
@@ -173,11 +306,11 @@ def admin_verify_2fa_view(request):
             ).order_by('-created_at').first()
 
         if verification:
-            # Mark code as used
+           
             verification.is_used = True
             verification.save()
 
-            # Clean session
+    
             if 'pre_2fa_user_id' in request.session:
                 del request.session['pre_2fa_user_id']
 
@@ -205,7 +338,7 @@ def dashboard(request):
         "inventory_value": sum((p.stock_value for p in products), Decimal("0.00")),
         "sales_total": sum((s.total for s in sales_7), Decimal("0.00")),
         "recent_transactions": StockTransaction.objects.select_related("product").order_by("-created_at")[:6],
-        "low_products": products.filter(quantity__lte=F("reorder_level")).select_related("category")[:6],
+        "low_products": products.filter(quantity__lte=F("reorder_level")).select_related("category"),
         "recent_sales": Sale.objects.select_related("product").order_by("-sold_at")[:5],
     }
     return render(request, "inventory/dashboard.html", context)
@@ -213,13 +346,27 @@ def dashboard(request):
 @login_required
 def product_list(request):
     q = request.GET.get("q", "")
-    products = Product.objects.select_related("category","supplier").all().order_by("name")
+    products = Product.objects.filter(active=True).select_related("category", "supplier")
     if q: products = products.filter(name__icontains=q) | products.filter(sku__icontains=q)
     return render(request, "inventory/product_list.html", {"products": products, "q": q})
 
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        product.active = False
+        product.save()
+        messages.success(request, f"Product '{product.name}' has been removed from the active catalog.")
+    return redirect("product_list")
+
+
+
+
 @login_required
 def product_create(request):
-    form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         form.save(); messages.success(request, "Product created."); return redirect("product_list")
     return render(request, "inventory/form.html", {"form": form, "title": "Add product"})
@@ -227,10 +374,20 @@ def product_create(request):
 @login_required
 def product_edit(request, pk):
     obj = get_object_or_404(Product, pk=pk)
-    form = ProductForm(request.POST or None, instance=obj)
+    form = ProductForm(request.POST or None, request.FILES or None, instance=obj)
     if form.is_valid():
         form.save(); messages.success(request, "Product updated."); return redirect("product_list")
     return render(request, "inventory/form.html", {"form": form, "title": "Edit product"})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        product.active = False
+        product.save()
+        messages.success(request, f"Product '{product.name}' has been removed from the active catalog.")
+    return redirect("product_list")
 
 @login_required
 def category_list(request):
@@ -307,7 +464,7 @@ def sale_create(request):
 
 @login_required
 def forecast(request):
-    # Simple transparent baseline: average daily sales over the last 30 days, projected 30 days.
+    
     since = timezone.now() - timedelta(days=30)
     rows = []
     for product in Product.objects.filter(active=True).order_by("name"):
@@ -336,7 +493,7 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # Default new staff to is_staff=False or True depending on your policy
+            
             user.save()
             messages.success(request, f"Account created for {user.username}! You can now sign in.")
             return redirect('login')

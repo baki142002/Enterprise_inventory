@@ -17,7 +17,7 @@ def send_email_otp(user_email, otp_code, username="Operator"):
         f"Enterprise Operations Security Team"
     )
 
-    # Keep terminal output for local development fallback
+    
     print("\n" + "=" * 50)
     print(f"--> [GMAIL DISPATCH] Sending to: {user_email}")
     print(f"--> [StockPilot OTP Code]: {otp_code}")

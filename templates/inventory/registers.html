@@ -1,221 +1,185 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Staff Registration · StockPilot</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/app.css' %}">
-  
-  <style>
-    /* Registration Page Isolated Styles */
-    .reg-body {
-      margin: 0;
-      min-height: 100vh;
-      background-color: #0b1120;
-      color: #f8fafc;
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-image: 
-        radial-gradient(at 10% 20%, rgba(37, 99, 235, 0.12) 0px, transparent 50%),
-        radial-gradient(at 90% 80%, rgba(30, 58, 138, 0.15) 0px, transparent 50%);
-      padding: 2rem 1rem;
-      box-sizing: border-box;
-    }
-
-    .reg-card {
-      width: 100%;
-      max-width: 460px;
-      padding: 2.5rem;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background-color: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
-
-    .reg-header {
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .reg-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.3rem 0.65rem;
-      border-radius: 9999px;
-      background-color: rgba(56, 189, 248, 0.1);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      margin-bottom: 1rem;
-    }
-
-    .reg-badge .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: #38bdf8;
-      box-shadow: 0 0 6px #38bdf8;
-    }
-
-    .reg-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin: 0 0 0.5rem 0;
-      letter-spacing: -0.02em;
-    }
-
-    .reg-subtitle {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin: 0;
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.825rem;
-      font-weight: 600;
-      color: #cbd5e1;
-      margin-bottom: 0.45rem;
-    }
-
-    /* Target Django default inputs inside form-group */
-    .form-group input {
-      width: 100%;
-      height: 44px;
-      padding: 0 1rem;
-      border-radius: 8px;
-      background-color: rgba(2, 6, 23, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-      box-sizing: border-box;
-      outline: none;
-    }
-
-    .form-group input:focus {
-      border-color: #3b82f6;
-      background-color: rgba(2, 6, 23, 0.95);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-    }
-
-    .form-helptext {
-      display: block;
-      font-size: 0.72rem;
-      color: #64748b;
-      margin-top: 0.35rem;
-      line-height: 1.4;
-    }
-
-    .form-errors {
-      color: #fca5a5;
-      font-size: 0.78rem;
-      margin-top: 0.35rem;
-      list-style: none;
-      padding-left: 0;
-    }
-
-    .btn-create {
-      width: 100%;
-      height: 46px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      font-size: 0.925rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      transition: all 0.2s ease;
-      margin-top: 1.75rem;
-    }
-
-    .btn-create:hover {
-      background: linear-gradient(135deg, #1d4ed8, #1e40af);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-    }
-
-    .reg-footer {
-      margin-top: 1.75rem;
-      text-align: center;
-      font-size: 0.825rem;
-      color: #94a3b8;
-    }
-
-    .reg-footer a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .reg-footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Registration · StockPilot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .register-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 460px;
+            padding: 36px 32px;
+        }
+        .header-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(66, 15, 28, 0.08);
+            color: #420f1c;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .subtitle {
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 0.95rem;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+        input:focus {
+            border-color: #420f1c;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(66, 15, 28, 0.12);
+        }
+        .help-text {
+            font-size: 0.78rem;
+            color: #64748b;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        .help-text ul {
+            margin-left: 16px;
+            margin-top: 4px;
+        }
+        .error-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            margin-bottom: 18px;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            margin-top: 6px;
+            background: #420f1c;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(66, 15, 28, 0.25);
+        }
+        .btn-submit:hover {
+            background: #5c1627;
+            transform: translateY(-1px);
+        }
+        .footer-link {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+        .footer-link a {
+            color: #7a1e36;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .footer-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body class="reg-body">
+<body>
 
-  <div class="reg-card">
-    <div class="reg-header">
-      <div class="reg-badge">
-        <span class="dot"></span>
-        <span>ACCESS PROVISIONING</span>
-      </div>
-      <h1 class="reg-title">Register Staff Account</h1>
-      <p class="reg-subtitle">Create your enterprise credentials to access Enterprise.</p>
+<div class="register-card">
+    <div class="header-section">
+        <span class="badge">● Access Provisioning</span>
+        <h2>Register Staff Account</h2>
+        <p class="subtitle">Create your enterprise credentials to access StockPilot.</p>
     </div>
 
-    <form method="post" autocomplete="off">
-      {% csrf_token %}
-
-      {% for field in form %}
-        <div class="form-group">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          
-          {% if field.help_text %}
-            <span class="form-helptext">{{ field.help_text|safe }}</span>
-          {% endif %}
-          
-          {% if field.errors %}
-            <ul class="form-errors">
-              {% for error in field.errors %}
-                <li>• {{ error }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
+    {% if form.errors %}
+        <div class="error-box">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div>• {{ error }}</div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div>• {{ error }}</div>
+            {% endfor %}
         </div>
-      {% endfor %}
+    {% endif %}
 
-      <button type="submit" class="btn-create">
-        <span>Create Account & Provision Access</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-      </button>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="help-text">{{ field.help_text|safe }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">Create Account & Provision Access →</button>
     </form>
 
-    <div class="reg-footer">
-      Already have credentials? <a href="{% url 'login' %}">Sign in here</a>[cite: 15]
+    <div class="footer-link">
+        Already have credentials? <a href="{% url 'login' %}">Sign in here</a>
     </div>
-  </div>
+</div>
 
 </body>
 </html>

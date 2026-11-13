@@ -4,7 +4,7 @@
 {% block extrastyle %}
 {{ block.super }}
 <style>
-  /* Reset outer container margins */
+
   #content {
     padding: 2rem !important;
   }
@@ -17,7 +17,6 @@
     margin: 0 0 1.75rem 0;
   }
 
-  /* Two-column side-by-side balanced grid */
   .dashboard-grid {
     display: grid;
     grid-template-columns: minmax(0, 1.75fr) minmax(320px, 1fr);
@@ -32,7 +31,7 @@
     }
   }
 
-  /* Shared card aesthetics */
+
   .sp-card {
     background: #0f192e;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -61,7 +60,6 @@
     margin: 0;
   }
 
-  /* Operations Tables */
   .sp-table {
     width: 100%;
     border-collapse: collapse;
@@ -102,7 +100,6 @@
     text-align: right;
   }
 
-  /* Action Badges */
   .btn-badge-add {
     background: rgba(16, 185, 129, 0.12);
     color: #10b981;
@@ -143,7 +140,7 @@
     transform: translateY(-1px);
   }
 
-  /* Activity / Audit Feed Right Panel */
+  
   .status-indicator {
     display: inline-block;
     width: 7px;
@@ -206,7 +203,7 @@
 <h1 class="page-title">USERS INFORMATIONS</h1>
 
 <div class="dashboard-grid">
-  <!-- Left Side: Modules & Data Tables -->
+  
   <div class="main-column">
     {% for app in app_list %}
       <div class="sp-card">
@@ -244,7 +241,7 @@
     {% endfor %}
   </div>
 
-  <!-- Right Side: Recent Activity Audit Column -->
+
   <div class="sidebar-column">
     <div class="sp-card">
       <div class="sp-card-header">
